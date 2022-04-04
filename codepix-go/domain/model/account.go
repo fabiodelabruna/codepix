@@ -17,6 +17,7 @@ type Account struct {
 
 func (account *Account) isValid() error {
 	_, err := govalidator.ValidateStruct(account)
+
 	if err != nil {
 		return err
 	}
