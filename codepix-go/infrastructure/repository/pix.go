@@ -4,66 +4,63 @@ import (
 	"fmt"
 
 	"github.com/fabiodelabruna/codepix/codepix-go/domain/model"
-	"gorm.io/gorm"
+	"github.com/jinzhu/gorm"
 )
 
-type PixKeyRepositoryDB struct {
+type PixKeyRepositoryDb struct {
 	Db *gorm.DB
 }
 
-func (repository PixKeyRepositoryDB) AddBank(bank *model.Bank) error {
-	err := repository.Db.Create(bank).Error
+func (r PixKeyRepositoryDb) AddBank(bank *model.Bank) error {
+	err := r.Db.Create(bank).Error
 	if err != nil {
 		return err
 	}
 	return nil
 }
 
-func (repository PixKeyRepositoryDB) AddAccount(account *model.Account) error {
-	err := repository.Db.Create(account).Error
+func (r PixKeyRepositoryDb) AddAccount(account *model.Account) error {
+	err := r.Db.Create(account).Error
 	if err != nil {
 		return err
 	}
 	return nil
 }
 
-func (repository PixKeyRepositoryDB) RegisterKey(pixKey *model.PixKey) error {
-	err := repository.Db.Create(pixKey).Error
+func (r PixKeyRepositoryDb) RegisterKey(pixKey *model.PixKey) (*model.PixKey, error) {
+	err := r.Db.Create(pixKey).Error
 	if err != nil {
-		return err
+		return nil, err
 	}
-	return nil
+	return pixKey, nil
 }
 
-func (repository PixKeyRepositoryDB) FindKeyByKind(key string, kind string) (*model.PixKey, error) {
+func (r PixKeyRepositoryDb) FindKeyByKind(key string, kind string) (*model.PixKey, error) {
 	var pixKey model.PixKey
-	repository.Db.Preload("Account.Bank").First(&pixKey, "kind = ? and key = ?", kind, key)
+	r.Db.Preload("Account.Bank").First(&pixKey, "kind = ? and key = ?", kind, key)
 
 	if pixKey.ID == "" {
 		return nil, fmt.Errorf("no key was found")
 	}
-
 	return &pixKey, nil
 }
 
-func (repository PixKeyRepositoryDB) FindAccount(id string) (*model.Account, error) {
+func (r PixKeyRepositoryDb) FindAccount(id string) (*model.Account, error) {
 	var account model.Account
-	repository.Db.Preload("Bank").First(&account, "id = ?", id)
+	r.Db.Preload("Bank").First(&account, "id = ?", id)
 
 	if account.ID == "" {
-		return nil, fmt.Errorf("no account was found")
+		return nil, fmt.Errorf("no account found")
 	}
-
 	return &account, nil
 }
 
-func (repository PixKeyRepositoryDB) FindBank(id string) (*model.Bank, error) {
+func (r PixKeyRepositoryDb) FindBank(id string) (*model.Bank, error) {
 	var bank model.Bank
-	repository.Db.First(&bank, "id = ?", id)
+	r.Db.First(&bank, "id = ?", id)
 
 	if bank.ID == "" {
-		return nil, fmt.Errorf("no bank was found")
+		return nil, fmt.Errorf("no bank found")
 	}
-
 	return &bank, nil
 }

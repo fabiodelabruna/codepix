@@ -4,36 +4,35 @@ import (
 	"fmt"
 
 	"github.com/fabiodelabruna/codepix/codepix-go/domain/model"
-	"gorm.io/gorm"
+	"github.com/jinzhu/gorm"
 )
 
-type TransactionRepositoryDB struct {
+type TransactionRepositoryDb struct {
 	Db *gorm.DB
 }
 
-func (repository PixKeyRepositoryDB) Register(transaction *model.Transaction) error {
-	err := repository.Db.Create(transaction).Error
+func (t *TransactionRepositoryDb) Register(transaction *model.Transaction) error {
+	err := t.Db.Create(transaction).Error
 	if err != nil {
 		return err
 	}
 	return nil
 }
 
-func (repository PixKeyRepositoryDB) Save(transaction *model.Transaction) error {
-	err := repository.Db.Save(transaction).Error
+func (t *TransactionRepositoryDb) Save(transaction *model.Transaction) error {
+	err := t.Db.Save(transaction).Error
 	if err != nil {
 		return err
 	}
 	return nil
 }
 
-func (repository PixKeyRepositoryDB) Find(id string) (*model.Transaction, error) {
+func (t *TransactionRepositoryDb) Find(id string) (*model.Transaction, error) {
 	var transaction model.Transaction
-	repository.Db.Preload("AccountFrom.Bank").First(&transaction, "id = ?", id)
+	t.Db.Preload("AccountFrom.Bank").First(&transaction, "id = ?", id)
 
 	if transaction.ID == "" {
-		return nil, fmt.Errorf("no transaction was found")
+		return nil, fmt.Errorf("no key was found")
 	}
-
 	return &transaction, nil
 }
