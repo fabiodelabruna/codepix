@@ -10,7 +10,7 @@ require (
 	github.com/magiconair/properties v1.8.6 // indirect
 	github.com/satori/go.uuid v1.2.0
 	github.com/spf13/afero v1.8.2 // indirect
-	github.com/spf13/cobra v1.4.0 // indirect
+	github.com/spf13/cobra v1.4.0
 	github.com/spf13/cobra-cli v1.3.0 // indirect
 	github.com/stretchr/testify v1.7.1
 	golang.org/x/sys v0.0.0-20220405210540-1e041c57c461 // indirect
